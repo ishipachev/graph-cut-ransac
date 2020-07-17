@@ -172,7 +172,11 @@ namespace gcransac
 
 				// Calculate cot(alpha) needed for back-substitution.
 				for (size_t i = 0; i < roots.size(); i++) {
-					cos_theta[i] = std::clamp(roots[i], -1.0, 1.0);
+					// IS: made it C++11 compatable 
+          //cos_theta[i] = std::clamp(roots[i], -1.0, 1.0);
+          cos_theta[i] = roots[i] >  1.0 ? 1.0 :
+												 roots[i] < -1.0 ? -1.0 : 
+                         roots[i];
 					cot_alphas[i] = (-f_1 * p_1 / f_2 - cos_theta[i] * p_2 + d_12 * (*b)) /
 						(-f_1 * cos_theta[i] * p_2 / f_2 + p_1 - d_12);
 				}

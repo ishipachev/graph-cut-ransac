@@ -229,13 +229,23 @@ namespace gcransac
 			points_ = cv::Mat(static_cast<int>(correspondences.size()), 4, CV_64F);
 			double *points_ptr = reinterpret_cast<double*>(points_.data);
 
-			for (auto[distance_ratio, point_1, point_2] : correspondences)
+			//IS: C++11 compatible part
+			for (auto disAndPoints : correspondences)
 			{
-				*(points_ptr++) = point_1.x;
-				*(points_ptr++) = point_1.y;
-				*(points_ptr++) = point_2.x;
-				*(points_ptr++) = point_2.y;
+				*(points_ptr++) = std::get<1>(disAndPoints).x;
+				*(points_ptr++) = std::get<1>(disAndPoints).y;
+				*(points_ptr++) = std::get<2>(disAndPoints).x;
+				*(points_ptr++) = std::get<2>(disAndPoints).y;
 			}
+
+			//IS: C++17 required to use this part, I rewrote it
+			//for (auto[distance_ratio, point_1, point_2] : correspondences)
+			//{
+			//	*(points_ptr++) = point_1.x;
+			//	*(points_ptr++) = point_1.y;
+			//	*(points_ptr++) = point_2.x;
+			//	*(points_ptr++) = point_2.y;
+			//}
 
 			savePointsToFile(points_, scene_name_.c_str());
 			printf("Match number: %d\n", static_cast<int>(points_.rows));
